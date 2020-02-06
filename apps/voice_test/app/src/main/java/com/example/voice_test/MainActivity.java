@@ -20,20 +20,24 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SpeechToTexter.Callback {
     private static final String TAG = "MainActivity LOG";
-    private TextToSpeech tts;
-    private SpeechRecognizer recognizer;
-    private Button button;
+    private TextToSpeecher tts;
+    private SpeechToTexter recognizer;
     private TextView textView;
 
     protected void onStart() {
         super.onStart();
-        button = findViewById(R.id.button);
+        Button button = findViewById(R.id.button);
         textView = findViewById(R.id.textView);
+        recognizer = new SpeechToTexter(this);
+        tts = new TextToSpeecher(this);
+
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
@@ -45,15 +49,16 @@ public class MainActivity extends AppCompatActivity {
                     intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
                     intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,5);
                     intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,"ru_RU");
-                    recognizer.startListening(intent);
+                    recognizer.startListeningMethod(intent);
                 }
             }
         });
-
-        initializeTextToSpeech();
-        initializeSpeechRecognizer();
+        recognizer.initialize();
+        recognizer.setOnResultCallback(this);
+        recognizer.doSomething();
+        tts.initialize(this);
         Toast.makeText(this, "Ready",Toast.LENGTH_LONG).show();
-        speak("Загружено");
+        tts.speak("Загружено");
     }
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,13 +68,13 @@ public class MainActivity extends AppCompatActivity {
 
     protected void onPause() {
         super.onPause();
-//        tts.shutdown();
+        tts.shutdown();
     }
 
     protected void onResume() {
         super.onResume();
-//        initializeSpeechRecognizer();
-//        initializeTextToSpeech();
+//        recognizer.initialize();
+//        tts.initialize(this);
     }
 
     protected void onStop() {
@@ -80,67 +85,22 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    private void processResult(String result_message) {
-        result_message = result_message.toLowerCase();
-        if(result_message.contains("проверка")) {
-            speak("Тест пройден");
+    public void callingBack() {
+        String recognizedMessage = recognizer.getFirstRezult();
+        textView.setText(recognizedMessage);
+        if(recognizedMessage.contains("проверка")) {
+            tts.speak("Тест пройден");
         }
     }
 
-    private void initializeSpeechRecognizer() {
-        if (SpeechRecognizer.isRecognitionAvailable(this)) {
-            recognizer = SpeechRecognizer.createSpeechRecognizer(this);
-            recognizer.setRecognitionListener(new RecognitionListener() {
-                public void onReadyForSpeech(Bundle params) {
-                    Log.i(TAG,"onReadyForSpeech");
-                }
-                public void onBeginningOfSpeech() {
-                    Log.i(TAG,"onBeginningOfSpeech");
-                }
-                public void onRmsChanged(float rmsdB) {
-//                    Log.i(TAG,"rmsdB changed to "+rmsdB);
-                }
-                public void onBufferReceived(byte[] buffer) {
-                    Log.i(TAG,"onBufferReceived");
-                }
-                public void onEndOfSpeech() {
-                    Log.i(TAG,"onEndOfSpeech");
-                }
-                public void onError(int error) {
-                    Log.i(TAG,"ERROR "+error);
-                }
-                public void onResults(Bundle results) {
-                    List<String> result_arr = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-                    processResult(result_arr.get(0));
-                    Log.i(TAG, String.format("onResults: %s", result_arr));
-                    Toast.makeText(MainActivity.this, String.format("Распознано: %s", result_arr),Toast.LENGTH_LONG).show();
-                    textView.setText(result_arr.get(0));
-                }
-                public void onPartialResults(Bundle partialResults) {
-                    Log.i(TAG,"onPartialResults");
-                }
-                public void onEvent(int eventType, Bundle params) {
-                    Log.i(TAG, String.format("onEvent %d %s", eventType, params));
-                }
-            });
-        }
-    }
-
-    private void initializeTextToSpeech() {
-        tts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
-            //            @Override
-            public void onInit(int status) {
-                if (tts.getEngines().size() == 0 ){
-                    Toast.makeText(MainActivity.this, "No TTS on device!",Toast.LENGTH_LONG).show();
-                    finish();
-                } else {
-                    tts.setLanguage(Locale.getDefault());
-                }
-            }
-        });
-    }
-
-    private void speak(String message) {
-        tts.speak(message,TextToSpeech.QUEUE_FLUSH,null,null);
-    }
+//    public void callingBack() {//List
+//        List<String> result = recognizer.getRezults();
+//        for (String elem:result
+//             ) {
+//            elem = elem.toLowerCase();
+//        }
+//        if(result.contains("проверка")) {
+//            speak("Тест пройден");
+//        }
+//    }
 }
