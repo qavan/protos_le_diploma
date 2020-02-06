@@ -13,6 +13,7 @@ import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,12 +28,18 @@ public class MainActivity extends AppCompatActivity {
     private TextToSpeech tts;
     private SpeechRecognizer recognizer;
     private Button button;
+    private TextView textView;
+
+    protected void onStart() {
+        super.onStart();
+    }
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         button = findViewById(R.id.button);
+        textView = findViewById(R.id.textView);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
             if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
@@ -63,6 +70,14 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         initializeSpeechRecognizer();
         initializeTextToSpeech();
+    }
+
+    protected void onStop() {
+        super.onStop();
+    }
+
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     private void processResult(String result_message) {
@@ -97,7 +112,9 @@ public class MainActivity extends AppCompatActivity {
                 public void onResults(Bundle results) {
                     List<String> result_arr = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
                     processResult(result_arr.get(0));
-                    Log.i(TAG, String.format("Result: %s", result_arr));
+                    Log.i(TAG, String.format("onResults: %s", result_arr));
+                    Toast.makeText(MainActivity.this, String.format("Распознано: %s", result_arr),Toast.LENGTH_LONG).show();
+                    textView.setText(result_arr.get(0));
                 }
                 public void onPartialResults(Bundle partialResults) {
                     Log.i(TAG,"onPartialResults");
