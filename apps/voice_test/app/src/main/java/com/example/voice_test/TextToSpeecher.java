@@ -6,18 +6,19 @@ import android.widget.Toast;
 
 import java.util.Locale;
 
-public class TextToSpeecher {
+class TextToSpeecher {
     private TextToSpeech tts;
 
-    public TextToSpeecher(Context context) {
+    TextToSpeecher(Context context, Float speechRate) {
         this.tts = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
             public void onInit(int status) {
 //                System.out.println("Init");
             }
         });
+        tts.setSpeechRate(speechRate);
     }
 
-    public void initialize(Context context) {
+    void initialize(Context context) {
         if (this.tts.getEngines().size() == 0 ){
             if (Locale.getDefault()==Locale.ENGLISH) {
                 Toast.makeText(context, "No TextToSpeech on device!",Toast.LENGTH_LONG).show();
@@ -30,11 +31,11 @@ public class TextToSpeecher {
         }
     }
 
-    public void speak(String message) {
+    void speak(String message) {
         this.tts.speak(message,TextToSpeech.QUEUE_FLUSH,null,null);
     }
 
-    public void shutdown() {
+    void shutdown() {
         this.tts.shutdown();
     }
 }

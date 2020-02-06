@@ -10,7 +10,7 @@ import android.util.Log;
 import java.util.Collections;
 import java.util.List;
 
-public class SpeechToTexter {
+class SpeechToTexter {
     private static final String TAG = "SpeechToTexter LOG";
     private SpeechRecognizer recognizer = null;
     private Context context;
@@ -26,11 +26,11 @@ public class SpeechToTexter {
         this.onResultCallback = onResultCallback;
     }
 
-    public void setOnResultCallback(Callback onResultCallback) {
+    void setOnResultCallback(Callback onResultCallback) {
         this.onResultCallback = onResultCallback;
     }
 
-    public List<String> getRezults() {
+    List<String> getRezults() {
         if (rezults != null) {
             return rezults;
         }
