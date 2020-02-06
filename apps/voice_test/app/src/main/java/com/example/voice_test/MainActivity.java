@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "myLogs";
+    private static final String TAG = "MainActivity LOG";
     private TextToSpeech tts;
     private SpeechRecognizer recognizer;
     private Button button;
@@ -32,44 +32,44 @@ public class MainActivity extends AppCompatActivity {
 
     protected void onStart() {
         super.onStart();
-    }
-
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
         button = findViewById(R.id.button);
         textView = findViewById(R.id.textView);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-            if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-                if (!ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,  Manifest.permission.RECORD_AUDIO)) {
-                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.RECORD_AUDIO},1);
+                if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                    if (!ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,  Manifest.permission.RECORD_AUDIO)) {
+                        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.RECORD_AUDIO},1);
+                    }
+                } else {
+                    Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                    intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+                    intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,5);
+                    intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,"ru_RU");
+                    recognizer.startListening(intent);
                 }
-            } else {
-                Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-                intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,5);
-                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,"ru_RU");
-                recognizer.startListening(intent);
-            }
             }
         });
 
         initializeTextToSpeech();
         initializeSpeechRecognizer();
-        Toast.makeText(MainActivity.this, "Ready",Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Ready",Toast.LENGTH_LONG).show();
+        speak("Загружено");
+    }
+
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
     }
 
     protected void onPause() {
         super.onPause();
-        tts.shutdown();
+//        tts.shutdown();
     }
 
     protected void onResume() {
         super.onResume();
-        initializeSpeechRecognizer();
-        initializeTextToSpeech();
+//        initializeSpeechRecognizer();
+//        initializeTextToSpeech();
     }
 
     protected void onStop() {
@@ -135,7 +135,6 @@ public class MainActivity extends AppCompatActivity {
                     finish();
                 } else {
                     tts.setLanguage(Locale.getDefault());
-                    speak("Загружено");
                 }
             }
         });
