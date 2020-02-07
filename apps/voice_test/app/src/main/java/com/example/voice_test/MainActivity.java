@@ -101,7 +101,7 @@ public class MainActivity extends Activity implements SpeechToTextUtil.SpeechToT
     }
 
     public String spotIndicationsSilence(List<String> message) {
-        String signStr = message.get(0);
+        String signStr = message.get(0).toLowerCase();
         switch (state) {
             case "done":
                 if (message.contains("квартира")) {
@@ -147,10 +147,6 @@ public class MainActivity extends Activity implements SpeechToTextUtil.SpeechToT
     @SuppressWarnings("deprecation")
     @Override
     public void onResult(String[] results) {
-        for (String elem : results
-        ) {
-            elem = elem.toLowerCase();
-        }
         List<String> recognizedResults = Arrays.asList(results);
         if (recognizedResults.contains("проверка")) {
             textToSpeech.speak("Тест пройден");
