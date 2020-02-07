@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">voice_test</string>
+    <string name="hotWater">Горячее водоснабжение</string>
+    <string name="stringRes">Тута будет фраза</string>
+    <string name="voice">VOICE!</string>
+    <string name="coldWater">Холодное водоснабжение</string>
+    <string name="electricity">Электричество</string>
 </resources>
