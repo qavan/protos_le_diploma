@@ -22,19 +22,18 @@
         android:singleLine="false" />
 
     <EditText
-        android:id="@+id/editText3"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:hint="@string/coldWater"
-        android:importantForAutofill="no"
-        android:inputType="text" />
-
-
-    <EditText
         android:id="@+id/editText2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:hint="@string/hotWater"
+        android:importantForAutofill="no"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/editText3"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:hint="@string/coldWater"
         android:importantForAutofill="no"
         android:inputType="text" />
 
