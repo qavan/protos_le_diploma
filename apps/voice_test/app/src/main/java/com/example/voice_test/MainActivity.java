@@ -29,8 +29,8 @@ public class MainActivity extends Activity implements SpeechToTextUtil.SpeechToT
     private Intent intent;
     private String state = "done";
     private EditText editText1, editText2, editText3;
-    private String signStr;
 
+    @SuppressWarnings("deprecation")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +40,7 @@ public class MainActivity extends Activity implements SpeechToTextUtil.SpeechToT
 
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     protected void onStart() {
         super.onStart();
@@ -63,6 +64,7 @@ public class MainActivity extends Activity implements SpeechToTextUtil.SpeechToT
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ru_RU");
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     protected void onPause() {
         super.onPause();
@@ -70,6 +72,7 @@ public class MainActivity extends Activity implements SpeechToTextUtil.SpeechToT
         textToSpeech.onPause();
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     protected void onResume() {
         super.onResume();
@@ -81,11 +84,13 @@ public class MainActivity extends Activity implements SpeechToTextUtil.SpeechToT
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     protected void onStop() {
         super.onStop();
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -96,7 +101,7 @@ public class MainActivity extends Activity implements SpeechToTextUtil.SpeechToT
     }
 
     public String spotIndicationsSilence(List<String> message) {
-        signStr = message.get(0);
+        String signStr = message.get(0);
         switch (state) {
             case "done":
                 if (message.contains("квартира")) {
@@ -112,28 +117,19 @@ public class MainActivity extends Activity implements SpeechToTextUtil.SpeechToT
                 break;
             case "electricity":
                 if ((message.size() >= 1) && (signStr.matches("-?\\d+"))) {
-                    Toast.makeText(this, "Электричество: " + signStr,Toast.LENGTH_LONG).show();
-                    textToSpeech.speak(signStr);
-                    editText1.setText(String.format("Электричество: %s", signStr));
-                    recognizerIntent();
+                    processSpot(editText1, "Электричество", signStr);
                     return "hot";
                 }
                 break;
             case "hot":
                 if ((message.size() >= 1) && (signStr.matches("-?\\d+"))) {
-                    Toast.makeText(this, "Горячее водоснабжение: " + signStr,Toast.LENGTH_LONG).show();
-                    textToSpeech.speak(signStr);
-                    editText2.setText(String.format("Горячее водоснабжение: %s", signStr));
-                    recognizerIntent();
+                    processSpot(editText2, "Горячее водоснабжение", signStr);
                     return "cold";
                 }
                 break;
             case "cold":
                 if ((message.size() >= 1) && (signStr.matches("-?\\d+"))) {
-                    Toast.makeText(this, "Холодное водоснабжение: " + signStr,Toast.LENGTH_LONG).show();
-                    textToSpeech.speak(signStr + " следующий");
-                    editText3.setText(String.format("Холодное водоснабжение: %s", signStr));
-                    recognizerIntent();
+                    processSpot(editText3, "Холодное водоснабжение", signStr);
                     return "done";
                 }
                 break;
@@ -141,6 +137,14 @@ public class MainActivity extends Activity implements SpeechToTextUtil.SpeechToT
         return "done";
     }
 
+    public void processSpot(EditText editText, String text, String sign) {
+        Toast.makeText(this, text + ": " + sign, Toast.LENGTH_LONG).show();
+        textToSpeech.speak(sign + " следующий");
+        editText.setText(String.format("%s: %s", text, sign));
+        recognizerIntent();
+    }
+
+    @SuppressWarnings("deprecation")
     @Override
     public void onResult(String[] results) {
         for (String elem : results
@@ -155,11 +159,13 @@ public class MainActivity extends Activity implements SpeechToTextUtil.SpeechToT
         state = spotIndicationsSilence(recognizedResults);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void onError(String message, int code) {
         Log.i(TAG, message);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void onClick(View v) {
         recognizerIntent();
