@@ -48,7 +48,7 @@ public class MainActivity extends Activity implements SpeechToTextUtil.SpeechToT
         Button button = findViewById(R.id.button);
         button.setOnClickListener(MainActivity.this);
 
-        textView = findViewById(R.id.textView);
+        textView = findViewById(R.id.textViewTitle);
 
         editText1 = findViewById(R.id.editText);
         editText2 = findViewById(R.id.editText2);
@@ -117,19 +117,19 @@ public class MainActivity extends Activity implements SpeechToTextUtil.SpeechToT
                 break;
             case "electricity":
                 if ((message.size() >= 1) && (signStr.matches("-?\\d+"))) {
-                    processSpot(editText1, "Электричество", signStr);
+                    processSpot(editText1, signStr);
                     return "hot";
                 }
                 break;
             case "hot":
                 if ((message.size() >= 1) && (signStr.matches("-?\\d+"))) {
-                    processSpot(editText2, "Горячее водоснабжение", signStr);
+                    processSpot(editText2, signStr);
                     return "cold";
                 }
                 break;
             case "cold":
                 if ((message.size() >= 1) && (signStr.matches("-?\\d+"))) {
-                    processSpot(editText3, "Холодное водоснабжение", signStr);
+                    processSpot(editText3, signStr);
                     return "done";
                 }
                 break;
@@ -137,10 +137,10 @@ public class MainActivity extends Activity implements SpeechToTextUtil.SpeechToT
         return "done";
     }
 
-    public void processSpot(EditText editText, String text, String sign) {
-        Toast.makeText(this, text + ": " + sign, Toast.LENGTH_LONG).show();
+    public void processSpot(EditText editText, String sign) {
+        Toast.makeText(this, sign, Toast.LENGTH_LONG).show();
         textToSpeech.speak(sign + " следующий");
-        editText.setText(String.format("%s: %s", text, sign));
+        editText.setText(String.format("%s", sign));
         recognizerIntent();
     }
 
